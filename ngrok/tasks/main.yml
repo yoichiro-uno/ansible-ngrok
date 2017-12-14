@@ -1,0 +1,35 @@
+---
+- name: Download ngrok
+  get_url:
+    url: https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip
+    dest: /opt/ngrok-stable-linux-amd64.zip
+    force: True
+  register: _dl_ngrok
+
+- name: create Dir
+  file: 
+    path: /opt/ngrok
+    state: directory
+
+- name: install ngrok
+  unarchive:
+    src: /opt/ngrok-stable-linux-amd64.zip
+    remote_src: yes
+    dest: /opt/ngrok
+    
+- name: set a path to /usr/bin
+  file:
+    src: /opt/ngrok/ngrok
+    dest: /usr/bin/ngrok
+    state: link
+
+- name: connect to account
+  shell: bash -lc "ngrok authtoken {{auth_token}}"
+  register: _auth_result
+  
+#- name: start ngrok
+#  shell: bash -lc "ngrok http {{ngrok_port}}"
+#  register: _ngrok_result
+#
+#- debug: var=_ngrok_result.stdout
+
